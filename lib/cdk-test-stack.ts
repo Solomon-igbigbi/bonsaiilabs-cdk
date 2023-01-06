@@ -9,7 +9,7 @@ import {
 } from "@aws-cdk/core";
 import * as ec2 from "@aws-cdk/aws-ec2";
 import * as rds from "@aws-cdk/aws-rds";
-import * as lambda from "@aws-cdk/aws-lambda";
+import * as lambda from "@aws-cdk/aws-lambda-nodejs";
 import * as path from "path";
 import * as apigw from "@aws-cdk/aws-apigateway";
 
@@ -63,11 +63,9 @@ export class CdkTestStack extends Stack {
       publiclyAccessible: false,
     });
 
-    // The Lambda function that contains the functionality
-    const handler = new lambda.Function(this, "Lambda", {
-      runtime: lambda.Runtime.NODEJS_12_X,
-      code: lambda.Code.fromAsset(path.resolve(__dirname, "lambda")),
-      handler: "handler.handler",
+    const handler = new lambda.NodejsFunction(this, "MyFunction", {
+      entry: path.resolve(__dirname, "lambda/handler.ts"), // accepts .js, .jsx, .ts, .tsx and .mjs files
+      handler: "handler", // defaults to 'handler'
       vpc,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
@@ -89,6 +87,10 @@ export class CdkTestStack extends Stack {
 
     new CfnOutput(this, "НТТР API URL", {
       value: api.url ?? "Something went wrong with the deploy",
+    });
+
+    new CfnOutput(this, "RDS Endpoint", {
+      value: dbInstance.dbInstanceEndpointAddress,
     });
   }
 }
