@@ -12,7 +12,6 @@ import * as rds from "@aws-cdk/aws-rds";
 import * as lambda from "@aws-cdk/aws-lambda-nodejs";
 import * as path from "path";
 import * as apigw from "@aws-cdk/aws-apigateway";
-import { Console } from "console";
 
 export class CdkTestStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -63,17 +62,6 @@ export class CdkTestStack extends Stack {
       databaseName: "cdktestdb",
       publiclyAccessible: false,
     });
-
-    // The Lambda function that contains the functionality
-    // const handler = new lambda.Function(this, "Lambda", {
-    //   runtime: lambda.Runtime.NODEJS_12_X,
-    //   code: lambda.Code.fromAsset(path.resolve(__dirname, "lambda")),
-    //   handler: "handler.handler",
-    //   vpc,
-    //   vpcSubnets: {
-    //     subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
-    //   },
-    // });
 
     const handler = new lambda.NodejsFunction(this, "MyFunction", {
       entry: path.resolve(__dirname, "lambda/handler.ts"), // accepts .js, .jsx, .ts, .tsx and .mjs files
